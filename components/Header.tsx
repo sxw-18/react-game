@@ -11,7 +11,7 @@ export default function Header() {
                 <Gamepad2 className="text-orange-500 w-6 h-6" />
             </div>
             <span className="text-xl font-extrabold tracking-tight text-gray-900">
-              Retro<span className="text-orange-500">Games</span>
+              Play<span className="text-orange-500">Box</span>
             </span>
           </Link>
           

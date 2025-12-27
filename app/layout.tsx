@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "RetroGames - 在线复古游戏模拟器",
+  title: "PlayBox - 在线复古游戏模拟器",
   description: "免费在线畅玩复古游戏，无需下载",
 };
 
