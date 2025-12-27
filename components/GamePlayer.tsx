@@ -3,6 +3,20 @@
 import { useEffect, useRef } from 'react';
 import { Game } from '@/data/types';
 
+declare global {
+  interface Window {
+    EJS_player: string;
+    EJS_gameName: string;
+    EJS_gameUrl: string;
+    EJS_core: string;
+    EJS_pathtodata: string;
+    EJS_startOnLoaded: boolean;
+    EJS_disableDatabases: boolean;
+    EJS_language: string;
+    EJS_emulator: any;
+  }
+}
+
 interface GamePlayerProps {
   game: Game;
 }
@@ -36,13 +50,25 @@ export default function GamePlayer({ game }: GamePlayerProps) {
     document.body.appendChild(script);
 
     return () => {
-      // Cleanup logic if needed
-      // Ideally we should destroy the emulator instance but EJS doesn't expose a clean destroy method easily
+      // Cleanup logic: Stop the emulator
+      if (window.EJS_emulator) {
+          try {
+              console.log('Stopping emulator...');
+              window.EJS_emulator.callEvent("exit");
+          } catch (e) {
+              console.warn('Error stopping emulator:', e);
+          }
+      }
+      
+      // Remove the script tag to keep DOM clean
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, [game]);
 
   return (
-    <div className="w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl relative" ref={containerRef}>
+    <div className="w-full aspect-[4/3] max-h-[80vh] bg-black rounded-lg overflow-hidden shadow-2xl relative mx-auto" ref={containerRef}>
       <div id="game" className="w-full h-full"></div>
     </div>
   );

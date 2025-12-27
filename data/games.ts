@@ -39,7 +39,7 @@ export const games: Game[] = [
   },
   {
     id: 'contra',
-    title: '魂斗罗',
+    title: '魂斗罗1',
     platform: '红白机FC',
     year: '1988',
     image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Contra%20NES%20game%20cover&image_size=square_hd',
