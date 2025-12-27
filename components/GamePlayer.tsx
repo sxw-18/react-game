@@ -46,7 +46,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
         }
     }
 
-    const effectiveRomUrl = romUrl || (game ? `/roms/${game.rom}` : '');
+    const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `https://static.8bgame.top/roms/${game.rom}`) : '');
     const effectiveCore = core || (game ? game.core : 'nes');
 
     if (!effectiveRomUrl) {
