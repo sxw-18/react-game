@@ -1,7 +1,12 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Gamepad2, Globe } from 'lucide-react';
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -15,10 +20,25 @@ export default function Header() {
             </span>
           </Link>
           
-          <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-gray-600">
-            <Link href="/" className="hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors">首页</Link>
-            <Link href="#" className="hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors text-orange-700 bg-orange-50">游戏</Link>
-            <Link href="/upload" className="hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors">上传 ROM</Link>
+          <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-gray-600 z-50">
+            <Link 
+                href="/" 
+                className={`px-3 py-2 rounded-md transition-colors relative z-50 cursor-pointer ${pathname === '/' ? 'text-orange-700 bg-orange-50' : 'hover:text-orange-600 hover:bg-orange-50'}`}
+            >
+                首页
+            </Link>
+            <Link 
+                href="/games" 
+                className={`px-3 py-2 rounded-md transition-colors relative z-50 cursor-pointer ${pathname?.startsWith('/games') || pathname?.startsWith('/game/') ? 'text-orange-700 bg-orange-50' : 'hover:text-orange-600 hover:bg-orange-50'}`}
+            >
+                游戏
+            </Link>
+            <Link 
+                href="/upload" 
+                className={`px-3 py-2 rounded-md transition-colors relative z-50 cursor-pointer ${pathname === '/upload' ? 'text-orange-700 bg-orange-50' : 'hover:text-orange-600 hover:bg-orange-50'}`}
+            >
+                上传 ROM
+            </Link>
           </nav>
         </div>
 
