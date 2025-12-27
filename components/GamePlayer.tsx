@@ -61,7 +61,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     window.EJS_core = effectiveCore || 'nes';
     window.EJS_pathtodata = 'https://static.8bgame.top/data/';
     window.EJS_startOnLoaded = true;
-    window.EJS_disableDatabases = true;
+    window.EJS_disableDatabases = false;
     window.EJS_language = "zh-CN";
     
     const handleReady = () => {

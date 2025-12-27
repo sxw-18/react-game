@@ -28,12 +28,6 @@ export default function Header() {
                 首页
             </Link>
             <Link 
-                href="/games" 
-                className={`px-3 py-2 rounded-md transition-colors relative z-50 cursor-pointer ${pathname?.startsWith('/games') || pathname?.startsWith('/game/') ? 'text-orange-700 bg-orange-50' : 'hover:text-orange-600 hover:bg-orange-50'}`}
-            >
-                游戏
-            </Link>
-            <Link 
                 href="/upload" 
                 className={`px-3 py-2 rounded-md transition-colors relative z-50 cursor-pointer ${pathname === '/upload' ? 'text-orange-700 bg-orange-50' : 'hover:text-orange-600 hover:bg-orange-50'}`}
             >
