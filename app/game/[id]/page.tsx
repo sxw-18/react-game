@@ -5,23 +5,18 @@ import GamePlayer from '@/components/GamePlayer';
 import { ArrowLeft, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Game } from '@/data/types';
 
-export default function GamePage({ params }: { params: Promise<{ id: string }> }) {
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
-  const [game, setGame] = useState<Game | undefined>(undefined);
+export default function GamePage() {
+  const params = useParams();
+  const router = useRouter();
+  
+  const id = params?.id as string;
+  const game = games.find((g) => g.id === id);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    params.then((p) => {
-        setResolvedParams(p);
-        const foundGame = games.find((g) => g.id === p.id);
-        setGame(foundGame);
-    });
-  }, [params]);
 
   const handleStartGame = () => {
     setIsPlaying(true);
@@ -47,25 +42,30 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
     setShowExitModal(false);
   };
 
-  if (!resolvedParams || !game) {
-    return <div className="text-center py-20 text-gray-600">Loading...</div>;
+  if (!game) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="text-xl font-bold text-gray-800">未找到该游戏</div>
+            <Link href="/" className="text-orange-600 hover:text-orange-700 font-medium">返回首页</Link>
+        </div>
+    );
   }
 
   return (
     <div className="relative">
-       {/* Breadcrumb Header */}
-       <div className="mb-6 flex items-center gap-4">
-          <button onClick={handleBackClick} className="inline-flex items-center gap-1 text-gray-600 hover:text-gray-900 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">
+       {/* Breadcrumb Header - Hidden on mobile when playing */}
+       <div className={`mb-4 md:mb-6 flex items-center gap-4 ${isPlaying ? 'hidden md:flex' : 'flex'}`}>
+          <button onClick={handleBackClick} className="inline-flex items-center gap-1 text-gray-600 hover:text-gray-900 transition-colors bg-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg shadow-sm border border-gray-100 text-sm md:text-base">
              <ArrowLeft size={18} />
              <span className="font-medium">返回</span>
           </button>
           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shadow-sm relative">
+             <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shadow-sm relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={game.image} alt={game.title} className="w-full h-full object-cover" />
              </div>
              <div>
-                <h1 className="text-xl font-bold text-gray-900 leading-tight">{game.title}</h1>
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 leading-tight">{game.title}</h1>
                 <span className="text-xs text-gray-500 font-medium">{game.platform}</span>
              </div>
           </div>
@@ -73,20 +73,31 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
 
        <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Game Area */}
-          <div className="flex-1 lg:max-w-[calc(100%-22rem)]">
-             <div className="bg-gradient-to-b from-[#1a1b2e] to-black rounded-xl overflow-hidden shadow-2xl relative aspect-[4/3] flex items-center justify-center group w-full max-w-4xl mx-auto border-4 border-[#1a1b2e]">
+          <div className={`flex-1 ${isPlaying ? 'w-full fixed inset-0 z-50 bg-black flex items-center justify-center md:relative md:w-auto md:bg-transparent md:block md:inset-auto landscape:h-screen landscape:w-screen landscape:fixed landscape:inset-0 landscape:z-50 landscape:bg-black' : ''}`}>
+             
+             {/* Mobile Back Button Overlay */}
+             {isPlaying && (
+                <button 
+                    onClick={handleBackClick}
+                    className="absolute top-4 left-4 z-[60] bg-white/20 backdrop-blur-md text-white p-2 rounded-full md:hidden landscape:top-2 landscape:left-2 landscape:p-1.5"
+                >
+                    <ArrowLeft size={24} />
+                </button>
+             )}
+
+             <div className={`bg-gradient-to-b from-[#1a1b2e] to-black overflow-hidden shadow-2xl relative flex items-center justify-center group w-full mx-auto ${isPlaying ? 'h-full w-full md:h-auto md:aspect-[4/3] md:rounded-xl md:border-4 md:border-[#1a1b2e] landscape:h-full landscape:w-full landscape:rounded-none landscape:border-0' : 'aspect-square md:aspect-[4/3] rounded-xl border-4 border-[#1a1b2e]'}`}>
                 {/* Initial Start Screen Overlay */}
                 {!isPlaying && (
-                    <div className="absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
-                        <div className="w-48 h-48 mb-6 relative shadow-2xl rounded-lg overflow-hidden border-4 border-white/10">
+                    <div className="absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                        <div className="w-32 h-32 md:w-48 md:h-48 mb-4 md:mb-6 relative shadow-2xl rounded-lg overflow-hidden border-4 border-white/10">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={game.image} alt={game.title} className="w-full h-full object-cover" />
                         </div>
-                        <h2 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">{game.title}</h2>
-                        <span className="text-gray-400 text-sm mb-8 bg-white/10 px-3 py-1 rounded-full">{game.platform}</span>
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg text-center">{game.title}</h2>
+                        <span className="text-gray-400 text-sm mb-6 md:mb-8 bg-white/10 px-3 py-1 rounded-full">{game.platform}</span>
                         <button 
                             onClick={handleStartGame}
-                            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-purple-900/50 flex items-center gap-2"
+                            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-orange-900/50 flex items-center gap-2"
                         >
                             <span className="text-xl">▶</span> 开始游戏
                         </button>
@@ -95,15 +106,15 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
                 
                 {/* Actual Game Player */}
                 {isPlaying && (
-                    <div className="relative z-10 w-full h-full bg-black">
+                    <div className="relative z-10 w-full h-full bg-black flex items-center justify-center">
                         <GamePlayer game={game} />
                     </div>
                 )}
              </div>
           </div>
 
-          {/* Right Sidebar - Controls & Info */}
-          <div className="w-full lg:w-80 flex-shrink-0 space-y-4 relative">
+          {/* Right Sidebar - Controls & Info - Hidden on mobile when playing */}
+          <div className={`w-full lg:w-80 flex-shrink-0 space-y-4 relative ${isPlaying ? 'hidden lg:block' : ''}`}>
              {/* Operations Panel */}
              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                 <h3 className="font-bold text-gray-800 mb-4 text-sm border-b border-gray-100 pb-2">操作</h3>

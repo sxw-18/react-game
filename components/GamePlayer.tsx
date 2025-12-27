@@ -140,7 +140,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
   }, [game, romUrl, core]);
 
   return (
-    <div className="w-full aspect-[4/3] max-h-[80vh] bg-black rounded-lg overflow-hidden shadow-2xl relative mx-auto" ref={containerRef}>
+    <div className="w-full h-full md:aspect-[4/3] md:h-auto md:max-h-[80vh] bg-black rounded-lg overflow-hidden shadow-2xl relative mx-auto" ref={containerRef}>
       {isLoading && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#1a1b2e] text-white">
               <div className="flex flex-col items-center gap-3">

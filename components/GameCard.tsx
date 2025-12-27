@@ -51,10 +51,15 @@ export default function GameCard({ game }: GameCardProps) {
         </div>
 
         {game.description && (
-            <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mt-auto h-9">
+            <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mt-auto h-9 mb-3">
                 {game.description}
             </p>
         )}
+
+        <Link href={`/game/${game.id}`} className="w-full bg-orange-600 text-white py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-orange-700 transition-colors shadow-sm md:hidden">
+            <Play size={14} fill="currentColor" />
+            开始游戏
+        </Link>
       </div>
     </div>
   );
