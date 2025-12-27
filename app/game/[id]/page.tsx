@@ -52,7 +52,7 @@ export default function GamePage({ params }: { params: Promise<{ id: string }> }
   }
 
   return (
-    <div className="container mx-auto px-4 relative">
+    <div className="relative">
        {/* Breadcrumb Header */}
        <div className="mb-6 flex items-center gap-4">
           <button onClick={handleBackClick} className="inline-flex items-center gap-1 text-gray-600 hover:text-gray-900 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">

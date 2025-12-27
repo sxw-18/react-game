@@ -23,20 +23,43 @@ interface GamePlayerProps {
 
 export default function GamePlayer({ game }: GamePlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scriptLoaded = useRef(false);
+  const isUnmounted = useRef(false);
 
   useEffect(() => {
-    if (scriptLoaded.current) return;
+    isUnmounted.current = false;
     
+    // Cleanup any existing emulator instance before starting a new one
+    if (window.EJS_emulator) {
+        try {
+            console.log('Cleaning up existing emulator before mount...');
+            window.EJS_emulator.callEvent("exit");
+            window.EJS_emulator = null;
+        } catch (e) {
+            console.warn('Error cleanup existing emulator:', e);
+        }
+    }
+
     // Define the global EJS variables
     window.EJS_player = '#game';
     window.EJS_gameName = game.id;
     window.EJS_gameUrl = `/roms/${game.rom}`;
-    window.EJS_core = game.core || 'nes'; // Default or from game data
+    window.EJS_core = game.core || 'nes';
     window.EJS_pathtodata = 'https://static.8bgame.top/data/';
     window.EJS_startOnLoaded = true;
     window.EJS_disableDatabases = true;
     window.EJS_language = "zh-CN";
+    
+    // Hook into EJS ready event to handle race conditions
+    // We define this before loading the script
+    const originalOnLoad = (window as any).EJS_onLoad;
+    (window as any).EJS_onLoad = () => {
+        if (isUnmounted.current && window.EJS_emulator) {
+            console.log('Emulator loaded after unmount, destroying immediately...');
+            window.EJS_emulator.callEvent("exit");
+            window.EJS_emulator = null;
+        }
+        if (originalOnLoad) originalOnLoad();
+    };
 
     const script = document.createElement('script');
     script.src = 'https://static.8bgame.top/data/loader.js';
@@ -44,25 +67,33 @@ export default function GamePlayer({ game }: GamePlayerProps) {
     
     script.onload = () => {
         console.log('EmulatorJS loader loaded');
-        scriptLoaded.current = true;
     };
 
     document.body.appendChild(script);
 
     return () => {
+      isUnmounted.current = true;
+      
       // Cleanup logic: Stop the emulator
       if (window.EJS_emulator) {
           try {
               console.log('Stopping emulator...');
               window.EJS_emulator.callEvent("exit");
+              // Force destroy global reference
+              window.EJS_emulator = null;
           } catch (e) {
               console.warn('Error stopping emulator:', e);
           }
       }
       
-      // Remove the script tag to keep DOM clean
+      // Remove the script tag
       if (document.body.contains(script)) {
         document.body.removeChild(script);
+      }
+      
+      // Clean up container content to ensure canvas is removed
+      if (containerRef.current) {
+          containerRef.current.innerHTML = '<div id="game" class="w-full h-full"></div>';
       }
     };
   }, [game]);
