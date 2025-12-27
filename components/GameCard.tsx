@@ -9,40 +9,52 @@ interface GameCardProps {
 
 export default function GameCard({ game }: GameCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group border border-gray-100">
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+    <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full">
+      <div className="relative aspect-square overflow-hidden bg-gray-100">
         <Image
           src={game.image}
           alt={game.title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover group-hover:scale-110 transition-transform duration-500"
           unoptimized
         />
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[2px]">
-            <Link href={`/game/${game.id}`} className="bg-white text-orange-500 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-1 hover:bg-orange-50 transition-colors transform translate-y-2 group-hover:translate-y-0 duration-300">
+        
+        {/* 悬停覆盖层 */}
+        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+            <Link href={`/game/${game.id}`} className="bg-orange-600 text-white px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 hover:bg-orange-700 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-lg hover:shadow-orange-500/30 hover:scale-105">
                 <Play size={16} fill="currentColor" />
-                立即游玩
+                开始游戏
             </Link>
         </div>
       </div>
-      <div className="p-4">
-        <h3 className="font-bold text-gray-800 line-clamp-1 mb-1">{game.title}</h3>
-        <div className="flex items-center justify-between mt-2">
-            <span className="inline-block bg-orange-50 text-orange-600 text-xs px-2 py-1 rounded-md font-medium">
-            {game.platform}
-            </span>
-            <span className="text-gray-400 text-xs">{game.year}</span>
+      
+      <div className="p-4 flex-1 flex flex-col">
+        <div className="flex justify-between items-start gap-2 mb-2">
+            <h3 className="font-bold text-gray-900 line-clamp-1 text-base group-hover:text-orange-600 transition-colors">{game.title}</h3>
+            <span className="text-gray-400 text-xs bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100 whitespace-nowrap">{game.year}</span>
         </div>
         
-        <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
-             <Link href={`/game/${game.id}`} className="text-xs font-semibold text-orange-500 hover:text-orange-700 flex items-center gap-1">
-                立即游玩
-             </Link>
-             <button className="text-xs font-semibold text-gray-400 hover:text-pink-500 flex items-center gap-1 transition-colors">
-                <Heart size={14} />
-                收藏
+        <div className="flex justify-between items-end gap-2 mb-3">
+            <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
+                <span className="inline-flex items-center bg-orange-50 text-orange-700 text-[10px] px-2 py-0.5 rounded-md font-medium border border-orange-100/50 whitespace-nowrap">
+                    {game.platform}
+                </span>
+                {game.genre && (
+                    <span className="inline-flex items-center bg-blue-50 text-blue-700 text-[10px] px-2 py-0.5 rounded-md font-medium border border-blue-100/50 whitespace-nowrap">
+                        {game.genre}
+                    </span>
+                )}
+            </div>
+             <button className="text-gray-400 hover:text-pink-500 transition-colors p-1.5 hover:bg-pink-50 rounded-full flex-shrink-0">
+                <Heart size={18} />
              </button>
         </div>
+
+        {game.description && (
+            <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mt-auto h-9">
+                {game.description}
+            </p>
+        )}
       </div>
     </div>
   );

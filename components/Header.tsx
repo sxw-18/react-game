@@ -8,17 +8,17 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="bg-orange-50 p-1.5 rounded-lg">
-                <Gamepad2 className="text-orange-500 w-6 h-6" />
+                <Gamepad2 className="text-orange-600 w-6 h-6" />
             </div>
             <span className="text-xl font-extrabold tracking-tight text-gray-900">
-              Play<span className="text-orange-500">Box</span>
+              Play<span className="text-orange-600">Box</span>
             </span>
           </Link>
           
           <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-gray-600">
-            <Link href="/" className="hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors">首页</Link>
-            <Link href="#" className="hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors text-orange-600 bg-orange-50">游戏</Link>
-            <Link href="/upload" className="hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors">上传 ROM</Link>
+            <Link href="/" className="hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors">首页</Link>
+            <Link href="#" className="hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors text-orange-700 bg-orange-50">游戏</Link>
+            <Link href="/upload" className="hover:text-orange-600 hover:bg-orange-50 px-3 py-2 rounded-md transition-colors">上传 ROM</Link>
           </nav>
         </div>
 

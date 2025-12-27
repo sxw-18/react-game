@@ -17,12 +17,12 @@ export default function Sidebar() {
               className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-md group-hover:bg-white group-hover:shadow-sm text-gray-500 group-hover:text-orange-500 transition-all">
+                <div className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-md group-hover:bg-white group-hover:shadow-sm text-gray-500 group-hover:text-orange-600 transition-all">
                     <Gamepad2 size={18} />
                 </div>
-                <span className="text-sm font-medium text-gray-700 group-hover:text-orange-500">{category.name}</span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600">{category.name}</span>
               </div>
-              <span className="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full group-hover:bg-orange-50 group-hover:text-orange-600">
+              <span className="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full group-hover:bg-orange-50 group-hover:text-orange-700">
                 {category.count}
               </span>
             </Link>

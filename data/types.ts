@@ -7,7 +7,9 @@ export interface Category {
 export interface Game {
   id: string;
   title: string;
+  description?: string; // New field for game description
   platform: string;
+  genre: string;
   year: string;
   image: string;
   rom: string;
