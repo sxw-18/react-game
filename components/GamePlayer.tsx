@@ -21,10 +21,12 @@ declare global {
 }
 
 interface GamePlayerProps {
-  game: Game;
+  game?: Game;
+  romUrl?: string;
+  core?: string;
 }
 
-export default function GamePlayer({ game }: GamePlayerProps) {
+export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isUnmounted = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,11 +46,19 @@ export default function GamePlayer({ game }: GamePlayerProps) {
         }
     }
 
+    const effectiveRomUrl = romUrl || (game ? `/roms/${game.rom}` : '');
+    const effectiveCore = core || (game ? game.core : 'nes');
+
+    if (!effectiveRomUrl) {
+        console.error('No ROM URL provided');
+        return;
+    }
+
     // Define the global EJS variables
     window.EJS_player = '#game';
-    window.EJS_gameName = game.id;
-    window.EJS_gameUrl = `/roms/${game.rom}`;
-    window.EJS_core = game.core || 'nes';
+    window.EJS_gameName = game ? game.id : 'local-game';
+    window.EJS_gameUrl = effectiveRomUrl;
+    window.EJS_core = effectiveCore || 'nes';
     window.EJS_pathtodata = 'https://static.8bgame.top/data/';
     window.EJS_startOnLoaded = true;
     window.EJS_disableDatabases = true;
@@ -127,7 +137,7 @@ export default function GamePlayer({ game }: GamePlayerProps) {
           containerRef.current.innerHTML = '<div id="game" class="w-full h-full"></div>';
       }
     };
-  }, [game]);
+  }, [game, romUrl, core]);
 
   return (
     <div className="w-full aspect-[4/3] max-h-[80vh] bg-black rounded-lg overflow-hidden shadow-2xl relative mx-auto" ref={containerRef}>
