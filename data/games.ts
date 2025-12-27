@@ -53,7 +53,7 @@ export const games: Game[] = [
     genre: "射击",
     year: "1988",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Contra%20NES%20game%20cover&image_size=square_hd",
-    rom: "contra.nes",
+    rom: "contra1.nes",
     core: "nes"
   }
 ];

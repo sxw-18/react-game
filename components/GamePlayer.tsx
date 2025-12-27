@@ -46,7 +46,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
         }
     }
 
-    const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `https://static.8bgame.top/roms/${game.rom}`) : '');
+    const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `https://upload.jishicv.com/roms/${game.rom}`) : '');
     const effectiveCore = core || (game ? game.core : 'nes');
 
     if (!effectiveRomUrl) {
@@ -59,7 +59,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     window.EJS_gameName = game ? game.id : 'local-game';
     window.EJS_gameUrl = effectiveRomUrl;
     window.EJS_core = effectiveCore || 'nes';
-    window.EJS_pathtodata = 'https://static.8bgame.top/data/';
+    window.EJS_pathtodata = 'https://upload.jishicv.com/data/';
     window.EJS_startOnLoaded = true;
     window.EJS_disableDatabases = false;
     window.EJS_language = "zh-CN";
@@ -95,7 +95,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     };
 
     const script = document.createElement('script');
-    script.src = 'https://static.8bgame.top/data/loader.js';
+    script.src = 'https://upload.jishicv.com/data/loader.js';
     script.async = true;
     
     script.onload = () => {
