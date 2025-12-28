@@ -67,6 +67,24 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
           window.EJS_disableDatabases = false;
           window.EJS_language = "zh-CN";
           
+          // 默认按键映射
+          window.EJS_Buttons = {
+              'P1Up': 38,    // Up
+              'P1Down': 40,  // Down
+              'P1Left': 37,  // Left
+              'P1Right': 39, // Right
+              'P1A': 90,     // Z
+              'P1B': 88,     // X
+              'P1X': 65,     // A
+              'P1Y': 83,     // S
+              'P1L': 81,     // Q
+              'P1R': 87,     // W
+              'P1Select': 16, // Shift
+              'P1Start': 13,  // Enter
+              'P1Coin': 16,   // Shift (Explicit for Arcade)
+              'P1Start1': 13  // Enter (Explicit for Arcade)
+          };
+          
           // 回调函数：通知父窗口加载状态
           window.EJS_onLoad = function() {
             window.parent.postMessage('EJS_onLoad', '*');
@@ -84,6 +102,15 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
           
           window.EJS_onGameStart = function() {
             window.parent.postMessage('EJS_onGameStart', '*');
+            // 游戏开始时再次聚焦，防止加载时间过长导致焦点丢失
+            setTimeout(function() {
+                var gameContainer = document.getElementById('game');
+                if (gameContainer) {
+                    gameContainer.focus();
+                    var canvas = gameContainer.querySelector('canvas');
+                    if (canvas) canvas.focus();
+                }
+            }, 100);
           };
         </script>
         <!-- 加载 EmulatorJS 核心脚本 -->
