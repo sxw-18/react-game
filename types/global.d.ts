@@ -22,5 +22,7 @@ declare global {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [key: string]: any;
     };
+    EJS_onLoad?: () => void;
+    EJS_onGameStart?: () => void;
   }
 }

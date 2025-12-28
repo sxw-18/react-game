@@ -1,10 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Game } from '@/data/types';
 import { emulatorConfig } from '@/data/config';
 import { getCoreFromExtension } from '@/utils/emulatorUtils';
 import { Loader2 } from 'lucide-react';
+
+// 确保 Window 接口包含 EmulatorJS 的回调函数
+declare global {
+  interface Window {
+    EJS_onLoad?: () => void;
+    EJS_onGameStart?: () => void;
+  }
+}
 
 interface GamePlayerProps {
   game?: Game;
@@ -14,20 +22,8 @@ interface GamePlayerProps {
 
 export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const gameContainerRef = useRef<HTMLDivElement>(null);
   
-  // 监听来自 iframe 的消息，判断模拟器是否加载完成
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      // 确保消息来自我们信任的源（如果是同源 iframe，通常没问题）
-      if (event.data === 'EJS_onLoad' || event.data === 'EJS_onGameStart') {
-        setIsLoading(false);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
   // 计算有效的 ROM URL
   const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `/api/roms/${game.rom}`) : '');
   
@@ -38,86 +34,102 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
   }
   const effectiveCore = core || (game?.core) || detectedCore;
 
+  useEffect(() => {
+    if (!effectiveRomUrl) return;
+
+    // 清理之前的脚本和配置（如果存在）
+    const existingScript = document.getElementById('emulator-script');
+    if (existingScript) {
+      existingScript.remove();
+    }
+    
+    // 如果已有实例，尝试清理（EmulatorJS 没有标准的销毁方法，这里只能清理 DOM）
+    if (gameContainerRef.current) {
+        gameContainerRef.current.innerHTML = '';
+    }
+
+    // 设置全局变量
+    window.EJS_player = '#game';
+    window.EJS_gameName = game ? game.id : 'local-game';
+    window.EJS_gameUrl = effectiveRomUrl;
+    window.EJS_core = effectiveCore;
+    window.EJS_pathtodata = emulatorConfig.basePath;
+    window.EJS_startOnLoaded = true;
+    window.EJS_disableDatabases = false;
+    window.EJS_language = "zh-CN";
+    
+    // 默认按键映射 (遵循 MAME/Arcade 标准)
+    window.EJS_Buttons = {
+        'P1Up': 38,    // Up
+        'P1Down': 40,  // Down
+        'P1Left': 37,  // Left
+        'P1Right': 39, // Right
+        'P1A': 90,     // Z
+        'P1B': 88,     // X
+        'P1X': 65,     // A
+        'P1Y': 83,     // S
+        'P1L': 81,     // Q
+        'P1R': 87,     // W
+        'P1Select': 16, // Shift (家用机 Select)
+        'P1Start': 13,  // Enter (家用机 Start)
+        'P1Coin': 53,   // 5 (街机专用投币)
+        'P1Start1': 49  // 1 (街机专用开始)
+    };
+
+    // 设置回调
+    window.EJS_onLoad = function() {
+      setIsLoading(false);
+      // 尝试聚焦
+      setTimeout(function() {
+          const gameContainer = document.getElementById('game');
+          if (gameContainer) {
+              gameContainer.focus();
+              const canvas = gameContainer.querySelector('canvas');
+              if (canvas) canvas.focus();
+          }
+      }, 500);
+    };
+    
+    window.EJS_onGameStart = function() {
+      setIsLoading(false);
+      // 游戏开始时再次聚焦
+      setTimeout(function() {
+          const gameContainer = document.getElementById('game');
+          if (gameContainer) {
+              gameContainer.focus();
+              const canvas = gameContainer.querySelector('canvas');
+              if (canvas) canvas.focus();
+          }
+      }, 100);
+    };
+
+    // 动态加载 loader.js
+    const script = document.createElement('script');
+    script.src = emulatorConfig.loaderPath;
+    script.id = 'emulator-script';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // 清理函数
+    return () => {
+      // 移除脚本
+      const scriptToRemove = document.getElementById('emulator-script');
+      if (scriptToRemove) {
+        scriptToRemove.remove();
+      }
+      
+      // 清理全局回调，防止内存泄漏或报错
+      delete (window as any).EJS_onLoad;
+      delete (window as any).EJS_onGameStart;
+      // 注意：不能轻易 delete 其他 EJS_ 变量，因为模拟器运行可能还需要它们，
+      // 但在卸载组件时，我们通常希望停止一切。
+      // 理想情况下应该调用模拟器的销毁方法，但这里只能做 DOM 和 Script 的清理。
+    };
+  }, [effectiveRomUrl, effectiveCore, game]);
+
   if (!effectiveRomUrl) {
       return <div className="flex items-center justify-center h-full text-white bg-black">No ROM URL provided</div>;
   }
-
-  // 构建 iframe 内部的 HTML
-  // 使用 srcDoc 可以避免跨域问题，并且能直接注入配置
-  const iframeHtml = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: black; overflow: hidden; }
-          #game { width: 100%; height: 100%; }
-        </style>
-      </head>
-      <body>
-        <div id="game"></div>
-        <script>
-          // 配置 EmulatorJS 全局变量
-          window.EJS_player = '#game';
-          window.EJS_gameName = ${JSON.stringify(game ? game.id : 'local-game')};
-          window.EJS_gameUrl = ${JSON.stringify(effectiveRomUrl)};
-          window.EJS_core = ${JSON.stringify(effectiveCore)};
-          window.EJS_pathtodata = ${JSON.stringify(emulatorConfig.basePath)};
-          window.EJS_startOnLoaded = true;
-          window.EJS_disableDatabases = false;
-          window.EJS_language = "zh-CN";
-          
-          // 默认按键映射 (遵循 MAME/Arcade 标准)
-          window.EJS_Buttons = {
-              'P1Up': 38,    // Up
-              'P1Down': 40,  // Down
-              'P1Left': 37,  // Left
-              'P1Right': 39, // Right
-              'P1A': 90,     // Z
-              'P1B': 88,     // X
-              'P1X': 65,     // A
-              'P1Y': 83,     // S
-              'P1L': 81,     // Q
-              'P1R': 87,     // W
-              'P1Select': 16, // Shift (家用机 Select)
-              'P1Start': 13,  // Enter (家用机 Start)
-              'P1Coin': 53,   // 5 (街机专用投币)
-              'P1Start1': 49  // 1 (街机专用开始)
-          };
-          
-          // 回调函数：通知父窗口加载状态
-          window.EJS_onLoad = function() {
-            window.parent.postMessage('EJS_onLoad', '*');
-            
-            // 尝试聚焦
-            setTimeout(function() {
-                var gameContainer = document.getElementById('game');
-                if (gameContainer) {
-                    gameContainer.focus();
-                    var canvas = gameContainer.querySelector('canvas');
-                    if (canvas) canvas.focus();
-                }
-            }, 500);
-          };
-          
-          window.EJS_onGameStart = function() {
-            window.parent.postMessage('EJS_onGameStart', '*');
-            // 游戏开始时再次聚焦，防止加载时间过长导致焦点丢失
-            setTimeout(function() {
-                var gameContainer = document.getElementById('game');
-                if (gameContainer) {
-                    gameContainer.focus();
-                    var canvas = gameContainer.querySelector('canvas');
-                    if (canvas) canvas.focus();
-                }
-            }, 100);
-          };
-        </script>
-        <!-- 加载 EmulatorJS 核心脚本 -->
-        <script src="${emulatorConfig.loaderPath}"></script>
-      </body>
-    </html>
-  `;
 
   return (
     <div className="w-full h-full md:aspect-[4/3] md:h-auto md:max-h-[80vh] bg-black rounded-lg overflow-hidden shadow-2xl relative mx-auto">
@@ -132,12 +144,16 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
           <p className="text-sm font-medium text-gray-300 animate-pulse">正在启动模拟器...</p>
         </div>
       )}
-      <iframe
-        srcDoc={iframeHtml}
-        className="w-full h-full border-none block"
-        allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
-        title="Emulator"
-      />
+      {/* 
+        EmulatorJS 需要一个 ID 为 "game" 的元素 (由 EJS_player 指定)
+        我们添加 tabIndex="0" 使其可聚焦，以接收键盘事件
+      */}
+      <div 
+        id="game" 
+        ref={gameContainerRef}
+        className="w-full h-full outline-none" 
+        tabIndex={0}
+      ></div>
     </div>
   );
 }
