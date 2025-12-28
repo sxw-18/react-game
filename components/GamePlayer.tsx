@@ -11,6 +11,7 @@ declare global {
   interface Window {
     EJS_onLoad?: () => void;
     EJS_onGameStart?: () => void;
+    EJS_defaultControls?: any;
   }
 }
 
@@ -58,23 +59,9 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     window.EJS_disableDatabases = false;
     window.EJS_language = "zh-CN";
     
-    // 默认按键映射 (遵循 MAME/Arcade 标准)
-    window.EJS_Buttons = {
-        'P1Up': 38,    // Up
-        'P1Down': 40,  // Down
-        'P1Left': 37,  // Left
-        'P1Right': 39, // Right
-        'P1A': 90,     // Z
-        'P1B': 88,     // X
-        'P1X': 65,     // A
-        'P1Y': 83,     // S
-        'P1L': 81,     // Q
-        'P1R': 87,     // W
-        'P1Select': 16, // Shift (家用机 Select)
-        'P1Start': 13,  // Enter (家用机 Start)
-        'P1Coin': 53,   // 5 (街机专用投币)
-        'P1Start1': 49  // 1 (街机专用开始)
-    };
+    // 初始化按钮配置对象 (保留默认值，仅按需覆盖)
+    window.EJS_Buttons = window.EJS_Buttons || {};
+    // 如果需要开启 Netplay，可以在这里设置: window.EJS_Buttons.netplay = true;
 
     // 设置回调
     window.EJS_onLoad = function() {
