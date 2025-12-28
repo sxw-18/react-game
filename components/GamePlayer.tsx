@@ -67,7 +67,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
           window.EJS_disableDatabases = false;
           window.EJS_language = "zh-CN";
           
-          // 默认按键映射
+          // 默认按键映射 (遵循 MAME/Arcade 标准)
           window.EJS_Buttons = {
               'P1Up': 38,    // Up
               'P1Down': 40,  // Down
@@ -79,10 +79,10 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
               'P1Y': 83,     // S
               'P1L': 81,     // Q
               'P1R': 87,     // W
-              'P1Select': 16, // Shift
-              'P1Start': 13,  // Enter
-              'P1Coin': 16,   // Shift (Explicit for Arcade)
-              'P1Start1': 13  // Enter (Explicit for Arcade)
+              'P1Select': 16, // Shift (家用机 Select)
+              'P1Start': 13,  // Enter (家用机 Start)
+              'P1Coin': 53,   // 5 (街机专用投币)
+              'P1Start1': 49  // 1 (街机专用开始)
           };
           
           // 回调函数：通知父窗口加载状态
