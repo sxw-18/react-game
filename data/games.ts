@@ -10,7 +10,7 @@ export const games: Game[] = [
     year: "1997",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=The%20King%20of%20Fighters%2097%20game%20cover%20art%20retro%20arcade%20style&image_size=square_hd",
     rom: "kof97.zip",
-    core: "fbalpha2012_neogeo"
+    core: "fbneo"
   },
   {
     id: "cadillacs",

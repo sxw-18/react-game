@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Game } from '@/data/types';
 import { emulatorConfig } from '@/data/config';
+import { getCoreFromExtension } from '@/utils/emulatorUtils';
 import { Loader2 } from 'lucide-react';
 
 declare global {
@@ -48,7 +49,14 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     }
 
     const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `${emulatorConfig.romBasePath}${game.rom}`) : '');
-    const effectiveCore = core || (game ? game.core : 'nes');
+    
+    // Detect core from URL if not provided
+    let detectedCore = 'nes';
+    if (effectiveRomUrl) {
+        detectedCore = getCoreFromExtension(effectiveRomUrl) || 'nes';
+    }
+    
+    const effectiveCore = core || (game?.core) || detectedCore;
 
     if (!effectiveRomUrl) {
         console.error('No ROM URL provided');
@@ -82,6 +90,21 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
             window.EJS_emulator = null;
         } else {
             console.log('EJS_onLoad fired');
+            
+            // Ensure keyboard input focus
+            if (window.EJS_emulator && typeof window.EJS_emulator.focus === 'function') {
+                window.EJS_emulator.focus();
+            }
+            
+            // Try to force focus on the game container or canvas if accessible
+            const gameContainer = document.getElementById('game');
+            if (gameContainer) {
+                gameContainer.focus();
+                // Find potential canvas inside
+                const canvas = gameContainer.querySelector('canvas');
+                if (canvas) canvas.focus();
+            }
+
             handleReady();
         }
         if (originalOnLoad) originalOnLoad();

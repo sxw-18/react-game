@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { Upload, FileUp, Gamepad2, AlertCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import GamePlayer from '@/components/GamePlayer';
+import { getCoreFromExtension } from '@/utils/emulatorUtils';
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -19,26 +20,9 @@ export default function UploadPage() {
       setFile(selectedFile);
       
       // Auto-detect core based on extension
-      const extension = selectedFile.name.split('.').pop()?.toLowerCase();
-      if (extension) {
-        const coreMap: Record<string, string> = {
-          'nes': 'nes',
-          'sfc': 'snes',
-          'smc': 'snes',
-          'gba': 'gba',
-          'gb': 'gb',
-          'gbc': 'gbc',
-          'md': 'segaMD',
-          'bin': 'segaMD',
-          'gen': 'segaMD',
-          'n64': 'n64',
-          'z64': 'n64',
-          'nds': 'nds',
-          'zip': 'nes', // Default for zip, user might need to change
-        };
-        if (coreMap[extension]) {
-          setCore(coreMap[extension]);
-        }
+      const detectedCore = getCoreFromExtension(selectedFile.name);
+      if (detectedCore) {
+        setCore(detectedCore);
       }
     }
   }, []);
