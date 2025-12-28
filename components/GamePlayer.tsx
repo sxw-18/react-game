@@ -29,7 +29,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
   }, []);
 
   // 计算有效的 ROM URL
-  const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `${emulatorConfig.romBasePath}${game.rom}`) : '');
+  const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `/api/roms/${game.rom}`) : '');
   
   // 自动检测核心
   let detectedCore = 'nes';
