@@ -21,7 +21,10 @@ import { Loader2 } from 'lucide-react';
         EJS_startOnLoaded: boolean;
         EJS_disableDatabases: boolean;
         EJS_language: string;
-        EJS_Buttons: any;
+        EJS_Buttons?: {
+            [key: string]: any;
+            netplay?: boolean | undefined;
+        };
         EJS_biosUrl?: string;
         EJS_color?: string;
         EJS_AdUrl?: string;
