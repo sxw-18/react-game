@@ -73,7 +73,7 @@ export default function GamePage() {
 
        <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Game Area */}
-          <div className={`flex-1 ${isPlaying ? 'w-full fixed inset-0 z-50 bg-black flex items-center justify-center md:relative md:w-auto md:bg-transparent md:block md:inset-auto landscape:h-screen landscape:w-screen landscape:fixed landscape:inset-0 landscape:z-50 landscape:bg-black' : ''}`}>
+          <div className={`flex-1 ${isPlaying ? 'w-full fixed inset-0 z-50 bg-black flex items-center justify-center md:relative md:w-auto md:bg-transparent md:block md:inset-auto landscape:h-screen landscape:w-screen landscape:fixed landscape:inset-0 landscape:z-50 landscape:bg-black md:landscape:relative md:landscape:w-auto md:landscape:h-auto md:landscape:bg-transparent md:landscape:inset-auto' : ''}`}>
              
              {/* Mobile Back Button Overlay */}
              {isPlaying && (
@@ -85,7 +85,7 @@ export default function GamePage() {
                 </button>
              )}
 
-             <div className={`bg-gradient-to-b from-[#1a1b2e] to-black overflow-hidden shadow-2xl relative flex items-center justify-center group w-full mx-auto ${isPlaying ? 'h-full w-full md:h-auto md:aspect-[4/3] md:rounded-xl md:border-4 md:border-[#1a1b2e] landscape:h-full landscape:w-full landscape:rounded-none landscape:border-0' : 'aspect-square md:aspect-[4/3] rounded-xl border-4 border-[#1a1b2e]'}`}>
+             <div className={`bg-gradient-to-b from-[#1a1b2e] to-black overflow-hidden shadow-2xl relative flex items-center justify-center group w-full mx-auto ${isPlaying ? 'h-full w-full md:h-auto md:aspect-[4/3] md:rounded-xl md:border-4 md:border-[#1a1b2e] landscape:h-full landscape:w-full landscape:rounded-none landscape:border-0 md:landscape:h-auto md:landscape:aspect-[4/3] md:landscape:rounded-xl md:landscape:border-4 md:landscape:border-[#1a1b2e]' : 'aspect-square md:aspect-[4/3] rounded-xl border-4 border-[#1a1b2e]'}`}>
                 {/* Initial Start Screen Overlay */}
                 {!isPlaying && (
                     <div className="absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm p-4">

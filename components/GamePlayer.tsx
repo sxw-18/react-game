@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Game } from '@/data/types';
+import { emulatorConfig } from '@/data/config';
 import { Loader2 } from 'lucide-react';
 
 declare global {
@@ -46,7 +47,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
         }
     }
 
-    const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `https://upload.jishicv.com/roms/${game.rom}`) : '');
+    const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `${emulatorConfig.romBasePath}${game.rom}`) : '');
     const effectiveCore = core || (game ? game.core : 'nes');
 
     if (!effectiveRomUrl) {
@@ -59,7 +60,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     window.EJS_gameName = game ? game.id : 'local-game';
     window.EJS_gameUrl = effectiveRomUrl;
     window.EJS_core = effectiveCore || 'nes';
-    window.EJS_pathtodata = 'https://upload.jishicv.com/data/';
+    window.EJS_pathtodata = emulatorConfig.basePath;
     window.EJS_startOnLoaded = true;
     window.EJS_disableDatabases = false;
     window.EJS_language = "zh-CN";
@@ -95,7 +96,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     };
 
     const script = document.createElement('script');
-    script.src = 'https://upload.jishicv.com/data/loader.js';
+    script.src = emulatorConfig.loaderPath;
     script.async = true;
     
     script.onload = () => {
