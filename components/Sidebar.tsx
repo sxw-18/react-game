@@ -1,8 +1,15 @@
 import Link from 'next/link';
 import { categories } from '@/data/categories';
+import { games } from '@/data/games';
 import { Gamepad2 } from 'lucide-react';
 
 export default function Sidebar() {
+  // 计算每个分类的实际数量，避免 categories.count 与实际 games 不一致
+  const categoriesWithCounts = categories.map((category) => {
+    const count = games.filter((g) => g.platform && g.platform.includes(category.name)).length;
+    return { ...category, count };
+  });
+
   return (
     <div className="w-64 bg-white shadow-sm rounded-lg p-4 hidden lg:block h-fit sticky top-24">
       <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
@@ -10,7 +17,7 @@ export default function Sidebar() {
         <span className="text-xs text-gray-400 cursor-pointer hover:text-orange-500">查看所有</span>
       </div>
       <ul className="space-y-1">
-        {categories.map((category) => (
+        {categoriesWithCounts.map((category) => (
           <li key={category.id}>
             <Link 
               href={`#`} 
