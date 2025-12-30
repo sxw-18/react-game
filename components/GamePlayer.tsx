@@ -17,7 +17,8 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
   const gameContainerRef = useRef<HTMLIFrameElement>(null);
 
   // 计算有效的 ROM URL
-  const effectiveRomUrl = romUrl || (game ? (game.rom.startsWith('http') ? game.rom : `${emulatorConfig.romBasePath}${game.rom}`) : '');
+  const isAbsoluteUrl = (url: string) => /^https?:\/\/|^\/\//i.test(url);
+  const effectiveRomUrl = romUrl || (game ? (isAbsoluteUrl(game.rom) ? game.rom : `${emulatorConfig.romBasePath}${game.rom}`) : '');
 
   // 自动检测核心
   let detectedCore = 'nes';
