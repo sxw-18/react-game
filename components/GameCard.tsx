@@ -11,16 +11,18 @@ export default function GameCard({ game }: GameCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full">
       <div className="relative aspect-square overflow-hidden bg-gray-100">
-        <Image
-          src={game.image}
-          alt={game.title}
-          fill
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
-          unoptimized
-        />
+        <Link href={`/game/${game.id}`} className="block w-full h-full">
+            <Image
+            src={game.image}
+            alt={game.title}
+            fill
+            className="object-cover group-hover:scale-110 transition-transform duration-500"
+            unoptimized
+            />
+        </Link>
         
         {/* 悬停覆盖层 */}
-        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px] pointer-events-none group-hover:pointer-events-auto">
             <Link href={`/game/${game.id}`} className="bg-orange-600 text-white px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 hover:bg-orange-700 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 shadow-lg hover:shadow-orange-500/30 hover:scale-105">
                 <Play size={16} fill="currentColor" />
                 开始游戏
@@ -30,7 +32,9 @@ export default function GameCard({ game }: GameCardProps) {
       
       <div className="p-4 flex-1 flex flex-col">
         <div className="flex justify-between items-start gap-2 mb-2">
-            <h3 className="font-bold text-gray-900 line-clamp-1 text-base group-hover:text-orange-600 transition-colors">{game.title}</h3>
+            <Link href={`/game/${game.id}`} className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-900 line-clamp-1 text-base group-hover:text-orange-600 transition-colors">{game.title}</h3>
+            </Link>
             <span className="text-gray-400 text-xs bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100 whitespace-nowrap">{game.year}</span>
         </div>
         
