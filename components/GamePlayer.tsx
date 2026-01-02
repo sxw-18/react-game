@@ -51,56 +51,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
     return <div className="flex items-center justify-center h-full text-white bg-black">No ROM URL provided</div>;
   }
 
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
-        #game { width: 100%; height: 100%; }
-      </style>
-    </head>
-    <body>
-      <div id="game"></div>
-      <script>
-        window.EJS_player = '#game';
-        window.EJS_gameName = '${game ? game.id : "local-game"}';
-        window.EJS_gameUrl = '${effectiveRomUrl}';
-        window.EJS_core = '${effectiveCore}';
-        window.EJS_pathtodata = '${emulatorConfig.basePath}';
-        window.EJS_startOnLoaded = true;
-        window.EJS_disableDatabases = false;
-        window.EJS_language = "zh-CN";
-        window.EJS_Buttons = {};
-        
-        window.EJS_onLoad = function() {
-          window.parent.postMessage({ type: 'EJS_onLoad' }, '*');
-          setTimeout(function() {
-            const gameContainer = document.getElementById('game');
-            if (gameContainer) {
-                gameContainer.focus();
-                const canvas = gameContainer.querySelector('canvas');
-                if (canvas) canvas.focus();
-            }
-          }, 500);
-        };
-        
-        window.EJS_onGameStart = function() {
-          window.parent.postMessage({ type: 'EJS_onGameStart' }, '*');
-           setTimeout(function() {
-            const gameContainer = document.getElementById('game');
-            if (gameContainer) {
-                gameContainer.focus();
-                const canvas = gameContainer.querySelector('canvas');
-                if (canvas) canvas.focus();
-            }
-          }, 100);
-        };
-      </script>
-      <script src="${emulatorConfig.loaderPath}"></script>
-    </body>
-    </html>
-  `;
+  const iframeSrc = `/emulator?rom=${encodeURIComponent(effectiveRomUrl)}&core=${effectiveCore}&gameId=${game ? game.id : 'local-game'}`;
 
   return (
     <div className="w-full h-full md:aspect-[4/3] md:h-auto md:max-h-[80vh] bg-black rounded-lg overflow-hidden shadow-2xl relative mx-auto">
@@ -117,7 +68,7 @@ export default function GamePlayer({ game, romUrl, core }: GamePlayerProps) {
       )}
       <iframe
         ref={gameContainerRef}
-        srcDoc={htmlContent}
+        src={iframeSrc}
         className="w-full h-full border-none outline-none"
         title="Game Emulator"
         allow="autoplay; fullscreen; gamepad"
