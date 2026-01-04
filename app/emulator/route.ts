@@ -65,8 +65,6 @@ export async function GET(request: NextRequest) {
   return new Response(htmlContent, {
     headers: {
       'Content-Type': 'text/html',
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   });
 }
