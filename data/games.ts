@@ -9,7 +9,7 @@ export const games: Game[] = [
     genre: "格斗",
     year: "1997",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=The%20King%20of%20Fighters%2097%20game%20cover%20art%20retro%20arcade%20style&image_size=square_hd",
-    rom: "kof97.zip",
+    rom: "arcade/kof97.zip",
     core: "fbneo"
   },
   {
@@ -20,7 +20,7 @@ export const games: Game[] = [
     genre: "动作",
     year: "1993",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Cadillacs%20and%20Dinosaurs%20arcade%20game%20cover%20art&image_size=square_hd",
-    rom: "dino.zip",
+    rom: "arcade/dino.zip",
     core: "fbalpha2012_cps1"
   },
   {
@@ -31,7 +31,7 @@ export const games: Game[] = [
     genre: "动作",
     year: "2004",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Dragon%20Ball%20Advanced%20Adventure%20GBA%20game%20cover&image_size=square_hd",
-    rom: "dragonball_adventure.gba",
+    rom: "gba/dragonball_adventure.gba",
     core: "gba"
   },
   {
@@ -42,7 +42,7 @@ export const games: Game[] = [
     genre: "动作",
     year: "1989",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Teenage%20Mutant%20Ninja%20Turtles%20NES%20game%20cover&image_size=square_hd",
-    rom: "tmnt.nes",
+    rom: "nes/tmnt.nes",
     core: "nes"
   },
   {
@@ -53,7 +53,7 @@ export const games: Game[] = [
     genre: "射击",
     year: "1988",
     image: "https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Contra%20NES%20game%20cover&image_size=square_hd",
-    rom: "contra1.nes",
+    rom: "nes/contra1.nes",
     core: "nes"
   }
 ];
